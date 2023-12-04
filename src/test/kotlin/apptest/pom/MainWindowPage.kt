@@ -1,4 +1,4 @@
-package paint.pom
+package apptest.pom
 
 import com.github.qky666.selenidepom.pom.Page
 import org.apache.logging.log4j.kotlin.Logging

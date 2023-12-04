@@ -1,4 +1,4 @@
-package paint.util
+package apptest.util
 
 import com.codeborne.selenide.Condition
 import com.codeborne.selenide.WebElementCondition

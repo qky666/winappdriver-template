@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package paint.util
+package apptest.util
 
 import com.codeborne.selenide.SelenideElement
 import org.openqa.selenium.Dimension

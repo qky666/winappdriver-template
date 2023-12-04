@@ -2,13 +2,15 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Paint Tests Suite">
     <parameter name="env" value="production"/>
-    <parameter name="appiumServer" value="http://127.0.0.1:4723"/>
-    <parameter name="process" value="mspaint.exe"/>
-    <parameter name="aumid" value="Microsoft.Paint_8wekyb3d8bbwe!App"/>
+<!--    <parameter name="server" value="http://127.0.0.1:4723"/>-->
+    <parameter name="server" value="http://127.0.0.1:4724/wd/hub"/>
+    <parameter name="process" value="CalculatorApp.exe"/>
+    <parameter name="aumid" value="Microsoft.WindowsCalculator_8wekyb3d8bbwe!App"/>
+    <parameter name="appWorkingDir" value=""/>
     <parameter name="appTopLevelWindow" value=""/>
     <test name="Paint test" enabled="true">
         <classes>
-            <class name="paint.testng.PaintTest">
+            <class name="apptest.testng.AppTest">
                 <methods>
                     <include name="setupApp"/>
                 </methods>

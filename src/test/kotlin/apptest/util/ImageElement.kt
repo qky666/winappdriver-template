@@ -1,4 +1,4 @@
-package paint.util
+package apptest.util
 
 import com.codeborne.selenide.Selenide
 import com.codeborne.selenide.SelenideElement

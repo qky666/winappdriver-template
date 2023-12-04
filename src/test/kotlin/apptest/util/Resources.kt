@@ -1,4 +1,4 @@
-package paint.util
+package apptest.util
 
 import java.util.Base64
 

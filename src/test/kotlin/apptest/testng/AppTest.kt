@@ -1,25 +1,20 @@
-package paint.testng
+package apptest.testng
 
+import apptest.pom.mainWindowPage
+import apptest.util.AppiumProvider
+import apptest.util.ReportHelper
 import com.codeborne.selenide.Selenide
 import com.codeborne.selenide.WebDriverRunner
 import com.codeborne.selenide.appium.SelenideAppium
 import com.github.qky666.selenidepom.config.SPConfig
 import com.github.qky666.selenidepom.data.TestData
 import com.github.qky666.selenidepom.pom.shouldLoadRequired
-import paint.util.AppiumProvider
-import paint.util.ReportHelper
 import org.apache.logging.log4j.kotlin.Logging
+import org.openqa.selenium.SessionNotCreatedException
 import org.testng.ITestResult
-import org.testng.annotations.AfterMethod
-import org.testng.annotations.AfterSuite
-import org.testng.annotations.AfterTest
-import org.testng.annotations.BeforeSuite
-import org.testng.annotations.BeforeTest
-import org.testng.annotations.Parameters
-import org.testng.annotations.Test
-import paint.pom.mainWindowPage
+import org.testng.annotations.*
 
-class PaintTest : Logging {
+class AppTest : Logging {
 
     // appiumService is failing when started. We need to start appium manually: 'appium server --use-plugins images'
 //    private val appiumLogFile = Path.of("build", "logs", "appium.log").toFile()
@@ -50,8 +45,10 @@ class PaintTest : Logging {
     }
 
     @BeforeTest(description = "Setup driver", alwaysRun = true)
-    @Parameters("env", "appiumServer", "process", "aumid", "appTopLevelWindow")
-    fun beforeMethod(env: String, appiumServer: String, process: String, aumid: String, appTopLevelWindow: String) {
+    @Parameters("env", "server", "process", "aumid", "appWorkingDir", "appTopLevelWindow")
+    fun beforeMethod(
+        env: String, server: String, process: String, aumid: String, appWorkingDir: String, appTopLevelWindow: String
+    ) {
         if (appTopLevelWindow.isEmpty()) {
             val command = arrayOf("taskkill", "/im", process, "/f")
             Runtime.getRuntime().exec(command).waitFor()
@@ -63,8 +60,8 @@ class PaintTest : Logging {
         SPConfig.quitCurrentThreadDriver()
         SPConfig.selenideConfig.browserSize(null)
         if (appTopLevelWindow.isEmpty()) WebDriverRunner.setWebDriver(
-            AppiumProvider.createAppDriver(appiumServer, aumid)
-        ) else WebDriverRunner.setWebDriver(AppiumProvider.createAppDriverWithWindow(appiumServer, appTopLevelWindow))
+            AppiumProvider.createYWinAppDriver(server, aumid, appWorkingDir)
+        ) else WebDriverRunner.setWebDriver(AppiumProvider.createAppDriverWithWindow(server, appTopLevelWindow))
         logger.info { "Webdriver created" }
     }
 
@@ -92,7 +89,11 @@ class PaintTest : Logging {
     @Test
     fun setupApp() {
         // Start app
-        SelenideAppium.launchApp()
+        try {
+            SelenideAppium.launchApp()
+        } catch (_: SessionNotCreatedException) {
+        }
+
         logger.info { "App started" }
         mainWindowPage.shouldLoadRequired()
     }
