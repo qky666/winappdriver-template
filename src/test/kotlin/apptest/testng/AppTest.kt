@@ -30,24 +30,30 @@ class AppTest : Logging {
 
     @BeforeSuite(description = "Set en-US keyboard. Start appium server (not working)")
     fun beforeSuite() {
-        Runtime.getRuntime()
-            .exec(arrayOf("powershell.exe", "Set-WinUserLanguageList", "-LanguageList", "en-US,", "es-ES", "-force"))
-            .waitFor()
+//        Runtime.getRuntime()
+//            .exec(arrayOf("powershell.exe", "Set-WinUserLanguageList", "-LanguageList", "en-US,", "es-ES", "-force"))
+//            .waitFor()
         // appiumService.start()
     }
 
     @AfterSuite(description = "Set es-ES keyboard. Stop appium server (not working)")
     fun afterSuite() {
         // appiumService.stop()
-        Runtime.getRuntime()
-            .exec(arrayOf("powershell.exe", "Set-WinUserLanguageList", "-LanguageList", "es-ES,", "en-US", "-force"))
-            .waitFor()
+//        Runtime.getRuntime()
+//            .exec(arrayOf("powershell.exe", "Set-WinUserLanguageList", "-LanguageList", "es-ES,", "en-US", "-force"))
+//            .waitFor()
     }
 
     @BeforeTest(description = "Setup driver", alwaysRun = true)
-    @Parameters("env", "server", "process", "aumid", "appWorkingDir", "appTopLevelWindow")
+    @Parameters("env", "server", "process", "aumid", "appTitle", "appWorkingDir", "appTopLevelWindow")
     fun beforeMethod(
-        env: String, server: String, process: String, aumid: String, appWorkingDir: String, appTopLevelWindow: String
+        env: String,
+        server: String,
+        process: String,
+        aumid: String,
+        appTitle: String,
+        appWorkingDir: String,
+        appTopLevelWindow: String,
     ) {
         if (appTopLevelWindow.isEmpty()) {
             val command = arrayOf("taskkill", "/im", process, "/f")
@@ -60,7 +66,7 @@ class AppTest : Logging {
         SPConfig.quitCurrentThreadDriver()
         SPConfig.selenideConfig.browserSize(null)
         if (appTopLevelWindow.isEmpty()) WebDriverRunner.setWebDriver(
-            AppiumProvider.createYWinAppDriver(server, aumid, appWorkingDir)
+            AppiumProvider.createYWinAppDriver(server, aumid, appTitle, appWorkingDir)
         ) else WebDriverRunner.setWebDriver(AppiumProvider.createAppDriverWithWindow(server, appTopLevelWindow))
         logger.info { "Webdriver created" }
     }

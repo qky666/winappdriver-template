@@ -3,8 +3,6 @@ package apptest.util
 import io.appium.java_client.windows.WindowsDriver
 import io.appium.java_client.windows.options.WindowsOptions
 import org.apache.logging.log4j.kotlin.Logging
-import org.openqa.selenium.remote.DesiredCapabilities
-import org.openqa.selenium.remote.RemoteWebDriver
 import java.net.MalformedURLException
 import java.net.URI
 
@@ -30,11 +28,29 @@ class AppiumProvider : Logging {
             }
         }
 
-        fun createYWinAppDriver(server: String, aumidOrPath: String, appWorkingDir: String): RemoteWebDriver {
-            val capabilities = DesiredCapabilities(mapOf("app" to aumidOrPath, "deviceName" to "WindowsPC"))
+        fun createYWinAppDriver(
+            server: String,
+            aumidOrPath: String,
+            appTitle: String,
+            appWorkingDir: String = "",
+        ): WindowsDriver {
+            val windowsOptions = WindowsOptions().setApp(aumidOrPath)
+            if (appWorkingDir.isNotEmpty()) {
+                windowsOptions.setAppWorkingDir(appWorkingDir)
+            }
+            // Experimental is not working finding some elements
+            // .setExperimentalWebDriver(true)
+            windowsOptions.setCapability("forceMatchAppTitle", appTitle)
+//            windowsOptions.setCapability("forceMatchClassName", "ApplicationFrameWindow")
+            windowsOptions.setCapability("clickWithInvoke", true)
+            windowsOptions.setCapability("ms:waitForAppLaunch", 20)
+            windowsOptions.setCapability("appium:createSessionTimeout", 30000)
+            windowsOptions.setCapability("appium:deviceName", "WindowsPC")
+            windowsOptions.setCapability("appium:settings[imageMatchThreshold]", "0.8")
+
             return try {
                 val url = URI(server).toURL()
-                RemoteWebDriver(url, capabilities)
+                WindowsDriver(url, windowsOptions)
             } catch (e: MalformedURLException) {
                 throw RuntimeException(e)
             }
